@@ -2,12 +2,13 @@
 % clc
 % clear
 
-% var_name = 'phit';
-var_name = 'zonal_wind';
+var_name = 'phit';
+% var_name = 'zonal_wind';
 % var_name = 'meridional_wind';
-it       = 25;
+it       = 15*24+1;
 
 nc_file = '..\run\mcv_output.nc';
+% nc_file = '..\run\mcv_output_RH_0p5.nc';
 
 dx         = ncreadatt(nc_file,'/','dx');
 % ids        = ncreadatt(nc_file,'/','ids');

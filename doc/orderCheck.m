@@ -2,12 +2,16 @@ clc
 clear
 
 time_start = 1;
-time_end   = 366;
+time_end   = 121;
 
-% history_path = 'F:\Study\Models\MCV\MCV_SW\run\MCV4_SGF_Version1';
-history_path = 'F:\Study\Models\MCV\MCV_SW\run';
+history_path = 'E:\Study\Models\FD_WENO_Cubed_Sphere\run';
 
-res_nc{1} = [history_path,'\','mcv_output.nc'];
+% res_nc{1} = [history_path,'\','mcv_output.nc'];
+
+res_nc{1} = [history_path,'\','mcv_output_2p0.nc'];
+res_nc{2} = [history_path,'\','mcv_output_1p0.nc'];
+% res_nc{3} = [history_path,'\','mcv_output_0p5.nc'];
+res_nc{3} = [history_path,'\','mcv_output.nc'];
 
 % res_nc{1} = [history_path,'\','mcv_output_9p0.nc'];
 % res_nc{2} = [history_path,'\','mcv_output_4p5.nc'];
@@ -42,12 +46,12 @@ for ires = 1:res_num
     jte = jce;
     
     areaCell = ncread(res_nc{ires},'areaCell');
-    u_end    = ncread(res_nc{ires},'uC'      ,[1,1,1,time_end  ],[Inf,Inf,Inf,1]);
-    v_end    = ncread(res_nc{ires},'vC'      ,[1,1,1,time_end  ],[Inf,Inf,Inf,1]);
-    phi_end  = ncread(res_nc{ires},'phiC'    ,[1,1,1,time_end  ],[Inf,Inf,Inf,1]);
-    u_start  = ncread(res_nc{ires},'uC'      ,[1,1,1,time_start],[Inf,Inf,Inf,1]);
-    v_start  = ncread(res_nc{ires},'vC'      ,[1,1,1,time_start],[Inf,Inf,Inf,1]);
-    phi_start= ncread(res_nc{ires},'phiC'    ,[1,1,1,time_start],[Inf,Inf,Inf,1]);
+    u_end    = ncread(res_nc{ires},'u'      ,[1,1,1,time_end  ],[Inf,Inf,Inf,1]);
+    v_end    = ncread(res_nc{ires},'v'      ,[1,1,1,time_end  ],[Inf,Inf,Inf,1]);
+    phi_end  = ncread(res_nc{ires},'phi'    ,[1,1,1,time_end  ],[Inf,Inf,Inf,1]);
+    u_start  = ncread(res_nc{ires},'u'      ,[1,1,1,time_start],[Inf,Inf,Inf,1]);
+    v_start  = ncread(res_nc{ires},'v'      ,[1,1,1,time_start],[Inf,Inf,Inf,1]);
+    phi_start= ncread(res_nc{ires},'phi'    ,[1,1,1,time_start],[Inf,Inf,Inf,1]);
     
     L1_phi  (ires) = L1  (phi_end(its:ite,jts:jte,:),phi_start(its:ite,jts:jte,:),areaCell(its:ite,jts:jte,:));
     L2_phi  (ires) = L2  (phi_end(its:ite,jts:jte,:),phi_start(its:ite,jts:jte,:),areaCell(its:ite,jts:jte,:));

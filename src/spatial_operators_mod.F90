@@ -49,8 +49,8 @@ MODULE spatial_operators_mod
       real, dimension(ics:ice,jcs:jce,ifs:ife) :: dvdx
       real, dimension(ics:ice,jcs:jce,ifs:ife) :: dudy
       
-      real eigenvalue_x(2)
-      real eigenvalue_y(2)
+      real eigenvalue_x(2,3)
+      real eigenvalue_y(2,3)
       real maxeigen_x
       real maxeigen_y
       
@@ -68,7 +68,7 @@ MODULE spatial_operators_mod
       call reconstruct(flux_x_ext_p, flux_x_ext_n, flux_x   )
       call reconstruct(flux_y_ext_p, flux_y_ext_n, flux_y   )
       call reconstruct(E_ext_p     , E_ext_n     , E        )
-      call reconstruct(phiG_ext_p  , phiG_ext_n  , stat%phiG)
+      call reconstruct(phiG_ext_p  , phiG_ext_n  , stat%phiG + mesh%phis * mesh%sqrtG)
       call reconstruct(u_ext_p     , u_ext_n     , stat%u   )
       call reconstruct(v_ext_p     , v_ext_n     , stat%v   )
       
@@ -76,8 +76,12 @@ MODULE spatial_operators_mod
         !$OMP PARALLEL DO PRIVATE(i,eigenvalue_x,maxeigen_x,ip1,im1,jc)
         do j = jts, jte
           do i = its-1, ite
-            eigenvalue_x(1) = stat%uc(i,j,iPatch) - sqrt(mesh%matrixIG(1,1,i,j,iPatch) * stat%phi(i,j,iPatch))
-            eigenvalue_x(2) = stat%uc(i,j,iPatch) + sqrt(mesh%matrixIG(1,1,i,j,iPatch) * stat%phi(i,j,iPatch))
+            eigenvalue_x(1,1) = stat%uc(i-1,j,iPatch) - sqrt( mesh%matrixIG(1,1,i-1,j,iPatch) * ( stat%phi(i-1,j,iPatch) + mesh%phis(i-1,j,iPatch) ) )
+            eigenvalue_x(2,1) = stat%uc(i-1,j,iPatch) + sqrt( mesh%matrixIG(1,1,i-1,j,iPatch) * ( stat%phi(i-1,j,iPatch) + mesh%phis(i-1,j,iPatch) ) )
+            eigenvalue_x(1,2) = stat%uc(i  ,j,iPatch) - sqrt( mesh%matrixIG(1,1,i  ,j,iPatch) * ( stat%phi(i  ,j,iPatch) + mesh%phis(i  ,j,iPatch) ) )
+            eigenvalue_x(2,2) = stat%uc(i  ,j,iPatch) + sqrt( mesh%matrixIG(1,1,i  ,j,iPatch) * ( stat%phi(i  ,j,iPatch) + mesh%phis(i  ,j,iPatch) ) )
+            eigenvalue_x(1,3) = stat%uc(i+1,j,iPatch) - sqrt( mesh%matrixIG(1,1,i+1,j,iPatch) * ( stat%phi(i+1,j,iPatch) + mesh%phis(i+1,j,iPatch) ) )
+            eigenvalue_x(2,3) = stat%uc(i+1,j,iPatch) + sqrt( mesh%matrixIG(1,1,i+1,j,iPatch) * ( stat%phi(i+1,j,iPatch) + mesh%phis(i+1,j,iPatch) ) )
             
             maxeigen_x = maxval(abs(eigenvalue_x))
             
@@ -95,8 +99,12 @@ MODULE spatial_operators_mod
         !$OMP PARALLEL DO PRIVATE(i,eigenvalue_y,maxeigen_y,jp1,jm1,ic)
         do j = jts-1, jte
           do i = its, ite
-            eigenvalue_y(1) = stat%vc(i,j,iPatch) - sqrt(mesh%matrixIG(2,2,i,j,iPatch) * stat%phi(i,j,iPatch))
-            eigenvalue_y(2) = stat%vc(i,j,iPatch) + sqrt(mesh%matrixIG(2,2,i,j,iPatch) * stat%phi(i,j,iPatch))
+            eigenvalue_y(1,1) = stat%vc(i,j-1,iPatch) - sqrt( mesh%matrixIG(2,2,i,j-1,iPatch) * ( stat%phi(i,j-1,iPatch) + mesh%phis(i,j-1,iPatch) ) )
+            eigenvalue_y(2,1) = stat%vc(i,j-1,iPatch) + sqrt( mesh%matrixIG(2,2,i,j-1,iPatch) * ( stat%phi(i,j-1,iPatch) + mesh%phis(i,j-1,iPatch) ) )
+            eigenvalue_y(1,2) = stat%vc(i,j  ,iPatch) - sqrt( mesh%matrixIG(2,2,i,j  ,iPatch) * ( stat%phi(i,j  ,iPatch) + mesh%phis(i,j  ,iPatch) ) )
+            eigenvalue_y(2,2) = stat%vc(i,j  ,iPatch) + sqrt( mesh%matrixIG(2,2,i,j  ,iPatch) * ( stat%phi(i,j  ,iPatch) + mesh%phis(i,j  ,iPatch) ) )
+            eigenvalue_y(1,3) = stat%vc(i,j+1,iPatch) - sqrt( mesh%matrixIG(2,2,i,j+1,iPatch) * ( stat%phi(i,j+1,iPatch) + mesh%phis(i,j+1,iPatch) ) )
+            eigenvalue_y(2,3) = stat%vc(i,j+1,iPatch) + sqrt( mesh%matrixIG(2,2,i,j+1,iPatch) * ( stat%phi(i,j+1,iPatch) + mesh%phis(i,j+1,iPatch) ) )
             
             maxeigen_y = maxval(abs(eigenvalue_y))
             

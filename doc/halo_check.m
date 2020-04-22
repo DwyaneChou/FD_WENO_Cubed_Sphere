@@ -2,10 +2,10 @@
 clc
 clear
 
-var_name = 'phit';
-% var_name = 'zonal_wind';
+% var_name = 'phit';
+var_name = 'zonal_wind';
 % var_name = 'meridional_wind';
-it       = 25;
+it       = 8*24+1;
 
 nc_file = '..\run\mcv_output.nc';
 
@@ -17,7 +17,7 @@ lon = ncread(nc_file,'lon');
 lat = ncread(nc_file,'lat');
 var = ncread(nc_file,var_name,[1,1,1,it],[Inf,Inf,6,1]);
 
-var_plot = squeeze(var(:,:,5))';
+var_plot = squeeze(var(:,:,1))';
 pic=pcolor(var_plot);
 colormap(jet)
 set(pic,'EdgeColor','None')
