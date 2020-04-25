@@ -65,6 +65,7 @@ MODULE ghost_mod
         
         IF ((ghost%X(i,j) >= X_RAW(iref-1)) .AND. (ghost%X(i,j) <= X_RAW(iref  )))THEN
             
+          !coef = ( ghost%X(i,j) - X_RAW(iref-1) )
           coef = ghost%X(i,j) - X_RAW(iref-1)
           
           ghost%coef(i,j) = coef
@@ -187,35 +188,32 @@ MODULE ghost_mod
     real   , intent(in ) :: coef(its:ite)
     
     integer i
-    integer P1,P2,P3,P4,P5
-    real    q1,q2,q3,q4,q5
+    integer P1,P2,P3,P4
+    real    q1,q2,q3,q4
     real    dh
     real    C
     
-    dh = 4. * dx
+    dh = 3. * dx
     
     do i = its,ite
-      if(iref(i)<=2)then
+      if(iref(i)==1)then
         P1 = 1
         P2 = 2
         P3 = 3
         P4 = 4
-        P5 = 5
-        C  = coef(i) + (iref(i)-1) * dx
-      elseif(iref(i)>=ite-2)then
-        P1 = ite - 4
-        P2 = ite - 3
-        P3 = ite - 2
-        P4 = ite - 1
-        P5 = ite
-        C  = coef(i) + (4-ite+iref(i)) * dx
-      else
-        P1 = iref(i) - 2
-        P2 = iref(i) - 1
-        P3 = iref(i)
-        P4 = iref(i) + 1
-        P5 = iref(i) + 2
+        C  = coef(i)
+      elseif(iref(i)==ite-1)then
+        P1 = ite - 3
+        P2 = ite - 2
+        P3 = ite - 1
+        P4 = ite
         C  = coef(i) + 2. * dx
+      else
+        P1 = iref(i) - 1
+        P2 = iref(i)
+        P3 = iref(i) + 1
+        P4 = iref(i) + 2
+        C  = coef(i) + dx
       endif
       
       !P1 = iref(i)
@@ -225,14 +223,9 @@ MODULE ghost_mod
       q2 = src(P2)
       q3 = src(P3)
       q4 = src(P4)
-      q5 = src(P5)
       
-      dest(i) = ( 3. * dh**4 * q1 &
-              +        dh**3 * (-25. * q1 + 48.  * q2 - 36.  * q3 + 16. * q4 -  3. * q5) * C     &
-              +   2. * dh**2 * ( 35. * q1 - 104. * q2 + 114. * q3 - 56. * q4 + 11. * q5) * C**2  &
-              -   16.* dh    * (  5. * q1 - 18.  * q2 + 24.  * q3 - 14. * q4 + 3.  * q5) * C**3  &
-              +   32.*          (      q1 - 4.   * q2 + 6.   * q3 - 4.  * q4 +       q5) * C**4 )&
-              /(3. * dh**4)
+      !dest(i) = q1 * (1.-coef(i)) + q2 * coef(i)
+      dest(i) = (2.*dh**3.*q1 + dh**2.*(-11.*q1 + 18.*q2 - 9.*q3 + 2.*q4) * C + 9.*dh*(2.*q1 - 5.*q2 + 4.*q3 - q4) * C**2. + 9.*(-q1 + 3.*q2 - 3.*q3 + q4) * C**3.) / (2.*dh**3.)
     
     enddo
   end subroutine linear_interp

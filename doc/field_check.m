@@ -2,10 +2,10 @@
 % clc
 % clear
 
-var_name = 'phit';
-% var_name = 'zonal_wind';
+% var_name = 'phit';
+var_name = 'zonal_wind';
 % var_name = 'meridional_wind';
-it       = 15*24+1;
+it       = 2;
 
 nc_file = '..\run\mcv_output.nc';
 % nc_file = '..\run\mcv_output_RH_0p5.nc';

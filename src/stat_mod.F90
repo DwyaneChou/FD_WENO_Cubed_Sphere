@@ -13,6 +13,7 @@ MODULE stat_mod
     real, dimension(:,:,:), allocatable :: vC    ! contravariant v-wind
     real, dimension(:,:,:), allocatable :: zonal_wind
     real, dimension(:,:,:), allocatable :: meridional_wind
+    real, dimension(:,:,:), allocatable :: phit  ! phi + phis
   end type stat_field
   
   type(stat_field), dimension(:), target, allocatable :: stat  ! allocated by n time points, which is used by temporal integration schemes
@@ -32,6 +33,17 @@ MODULE stat_mod
       allocate(stat(iT)%vC             (ics:ice,jcs:jce,ifs:ife))
       allocate(stat(iT)%zonal_wind     (ics:ice,jcs:jce,ifs:ife))
       allocate(stat(iT)%meridional_wind(ics:ice,jcs:jce,ifs:ife))
+      allocate(stat(iT)%phit           (ics:ice,jcs:jce,ifs:ife))
+      
+      stat(iT)%phiG            = 0.
+      stat(iT)%u               = 0.
+      stat(iT)%v               = 0.
+      stat(iT)%phi             = 0.
+      stat(iT)%uC              = 0.
+      stat(iT)%vC              = 0.
+      stat(iT)%zonal_wind      = 0.
+      stat(iT)%meridional_wind = 0.
+      stat(iT)%phit            = 0.
     enddo
     
   end subroutine initStat
@@ -48,6 +60,7 @@ MODULE stat_mod
     stat_out%vC              = stat_in%vC     
     stat_out%zonal_wind      = stat_in%zonal_wind     
     stat_out%meridional_wind = stat_in%meridional_wind
+    stat_out%phit            = stat_in%phit
     
   end subroutine copyStat
   

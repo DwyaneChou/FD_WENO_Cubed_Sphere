@@ -41,8 +41,16 @@ MODULE mesh_mod
     real, dimension(:,:,:    ), allocatable :: phis    ! surface geopotential height
     
     real, dimension(:,:,:    ), allocatable :: areaCell
-    real                                    :: weightsOnPV(DOF,DOF)
 
+    real, dimension(:,:,:    ), allocatable :: x_ext        ! Extended central angle on x direction for cells on each patch, unit: radian
+    real, dimension(:,:,:    ), allocatable :: y_ext        ! Extended central angle on y direction for cells on each patch, unit: radian
+    real, dimension(:,:,:    ), allocatable :: lon_ext      ! Extended longitude on cells
+    real, dimension(:,:,:    ), allocatable :: lat_ext      ! Extended latitude on cells
+    real, dimension(:,:,:    ), allocatable :: sqrtG_ext    ! Extended jacobian of Transformation, sqrt(G)
+    real, dimension(:,:,:,:,:), allocatable :: matrixG_ext  ! Extended horizontal metric Tensor, which transform covariant vectors to contravariant vectors
+    real, dimension(:,:,:,:,:), allocatable :: matrixIG_ext ! Extended horizontal metric Tensor, which transform contravariant vectors to covariant vectors
+    real, dimension(:,:,:,:,:), allocatable :: matrixA_ext  ! Extended horizontal metric Tensor, which transform 
+    real, dimension(:,:,:,:,:), allocatable :: matrixIA_ext ! Extended horizontal metric Tensor, which transform
   end type mesh_info
   
   type(mesh_info), target :: mesh
@@ -67,12 +75,12 @@ MODULE mesh_mod
     allocate( mesh%matrixA  (2, 2, ics:ice, ics:ice, ifs:ife) )
     allocate( mesh%matrixIA (2, 2, ics:ice, ics:ice, ifs:ife) )
     
+    allocate( mesh%f        (      ics:ice, ics:ice, ifs:ife) )
+    
     allocate( mesh%sinlon   (      ics:ice, ics:ice, ifs:ife) )
     allocate( mesh%coslon   (      ics:ice, ics:ice, ifs:ife) )
     allocate( mesh%sinlat   (      ics:ice, ics:ice, ifs:ife) )
     allocate( mesh%coslat   (      ics:ice, ics:ice, ifs:ife) )
-    
-    allocate( mesh%f        (      ics:ice, ics:ice, ifs:ife) )
     
     allocate( mesh%sinx     (      ics:ice, ics:ice, ifs:ife) )
     allocate( mesh%cosx     (      ics:ice, ics:ice, ifs:ife) )
@@ -90,6 +98,17 @@ MODULE mesh_mod
     allocate( mesh%phis     (      ics:ice, ics:ice, ifs:ife) )
     
     allocate( mesh%areaCell (      ics:ice, jcs:jce, ifs:ife) )
+    
+    allocate( mesh%x_ext        (      ids:ide, jds:jde, ifs:ife) )
+    allocate( mesh%y_ext        (      ids:ide, jds:jde, ifs:ife) )
+    allocate( mesh%lon_ext      (      ids:ide, jds:jde, ifs:ife) )
+    allocate( mesh%lat_ext      (      ids:ide, jds:jde, ifs:ife) )
+    
+    allocate( mesh%sqrtG_ext    (      ids:ide, ids:ide, ifs:ife) )
+    allocate( mesh%matrixG_ext  (2, 2, ids:ide, ids:ide, ifs:ife) )
+    allocate( mesh%matrixIG_ext (2, 2, ids:ide, ids:ide, ifs:ife) )
+    allocate( mesh%matrixA_ext  (2, 2, ids:ide, ids:ide, ifs:ife) )
+    allocate( mesh%matrixIA_ext (2, 2, ids:ide, ids:ide, ifs:ife) )
     
     ! Calculate mesh infomation on VIA
     do iPatch = ifs, ife
@@ -139,6 +158,29 @@ MODULE mesh_mod
     do iPatch = ifs, ife
       mesh%areaCell(1:Nx,1:Ny,iPatch) = areaCell_temp
     enddo
+    
+    ! Calculate extended mesh infomation on PV
+    do iPatch = ifs, ife
+      do jCell = jds, jde
+        do iCell = ids, ide
+          mesh%x_ext(iCell, jCell, iPatch) = 0.5 * (iCell - 1) * dx + x_min
+          mesh%y_ext(iCell, jCell, iPatch) = 0.5 * (jCell - 1) * dy + y_min
+          
+          call pointProjPlane2Sphere(mesh%lon_ext(iCell, jCell, iPatch), mesh%lat_ext(iCell, jCell, iPatch), &
+                                     mesh%x_ext  (iCell, jCell, iPatch), mesh%y_ext  (iCell, jCell, iPatch), iPatch)
+
+          call calc_matrixG (mesh%matrixG_ext (:, :, iCell, jCell, iPatch), mesh%x_ext  (iCell, jCell, iPatch), mesh%y_ext  (iCell, jCell, iPatch))
+          call calc_matrixIG(mesh%matrixIG_ext(:, :, iCell, jCell, iPatch), mesh%x_ext  (iCell, jCell, iPatch), mesh%y_ext  (iCell, jCell, iPatch))
+          call calc_matrixA (mesh%matrixA_ext (:, :, iCell, jCell, iPatch), mesh%lon_ext(iCell, jCell, iPatch), mesh%lat_ext(iCell, jCell, iPatch), iPatch)
+          call calc_matrixIA(mesh%matrixIA_ext(:, :, iCell, jCell, iPatch), mesh%lon_ext(iCell, jCell, iPatch), mesh%lat_ext(iCell, jCell, iPatch), iPatch)
+          call calc_Jacobian(mesh%sqrtG_ext   (      iCell, jCell, iPatch), mesh%x_ext  (iCell, jCell, iPatch), mesh%y_ext  (iCell, jCell, iPatch))
+        end do
+      end do
+    end do
+    
+    !do iCell = ids,ide
+    !  print*,mesh%sqrtG_ext(iCell,ids,1)-mesh%sqrtG_ext(iCell,ide,6),mesh%sqrtG_ext(iCell,ide,1)
+    !enddo
     
   end subroutine initMesh
   

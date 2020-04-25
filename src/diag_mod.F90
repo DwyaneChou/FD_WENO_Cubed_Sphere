@@ -14,12 +14,11 @@ MODULE diag_mod
       real    massOnCell(Nx,Ny,Nf)
       integer iCell,jCell,iPatch
       
-      massOnCell = 0
-      total_mass = 0.
       do iPatch = ifs, ife
         do jCell = 1, Ny
           do iCell = 1, Nx
-            massOnCell(iCell,jCell,iPatch) = massOnCell(iCell,jCell,iPatch) + stat%phiG(iCell,jCell,iPatch)
+            massOnCell(iCell,jCell,iPatch) = stat%phiG(iCell,jCell,iPatch)
+            !massOnCell(iCell,jCell,iPatch) = mesh%areaCell(iCell,jCell,iPatch) * stat%phi(iCell,jCell,iPatch)
           enddo
         enddo
       enddo
@@ -44,7 +43,8 @@ MODULE diag_mod
             KE = 0.5 * stat%phi(iCell,jCell,iPatch) * (stat%u(iCell,jCell,iPatch) * stat%uc(iCell,jCell,iPatch) + stat%v(iCell,jCell,iPatch) * stat%vc(iCell,jCell,iPatch))
             PE = 0.5 * (stat%phi(iCell,jCell,iPatch) + mesh%phis(iCell,jCell,iPatch))**2
             
-            energyOnCell(iCell,jCell,iPatch) = energyOnCell(iCell,jCell,iPatch) + mesh%sqrtG(iCell,jCell,iPatch) * (KE + PE)
+            energyOnCell(iCell,jCell,iPatch) = mesh%sqrtG(iCell,jCell,iPatch) * (KE + PE)
+            !energyOnCell(iCell,jCell,iPatch) = mesh%areaCell(iCell,jCell,iPatch) * (KE + PE)
           enddo
         enddo
       enddo

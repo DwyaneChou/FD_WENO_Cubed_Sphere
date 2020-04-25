@@ -5,7 +5,7 @@ clear
 % var_name = 'phit';
 var_name = 'zonal_wind';
 % var_name = 'meridional_wind';
-it       = 8*24+1;
+it       = 2;
 
 nc_file = '..\run\mcv_output.nc';
 
@@ -17,8 +17,8 @@ lon = ncread(nc_file,'lon');
 lat = ncread(nc_file,'lat');
 var = ncread(nc_file,var_name,[1,1,1,it],[Inf,Inf,6,1]);
 
-var_plot = squeeze(var(:,:,1))';
+var_plot = squeeze(var(:,:,4))';
 pic=pcolor(var_plot);
 colormap(jet)
-set(pic,'EdgeColor','None')
-% shading interp
+% set(pic,'EdgeColor','None')
+shading interp
