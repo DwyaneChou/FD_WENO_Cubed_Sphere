@@ -2,16 +2,16 @@ clc
 clear
 
 time_start = 1;
-time_end   = 34;
+time_end   = 121;
 
 history_path = 'E:\Study\Models\FD_WENO_Cubed_Sphere\run';
 
 % res_nc{1} = [history_path,'\','mcv_output.nc'];
 
-res_nc{1} = [history_path,'\','mcv_output_2p0.nc'];
+% res_nc{1} = [history_path,'\','mcv_output_2p0.nc'];
 % res_nc{2} = [history_path,'\','mcv_output_1p0.nc'];
 % res_nc{3} = [history_path,'\','mcv_output_0p5.nc'];
-res_nc{2} = [history_path,'\','mcv_output.nc'];
+% res_nc{2} = [history_path,'\','mcv_output.nc'];
 
 % res_nc{1} = [history_path,'\','mcv_output_9p0.nc'];
 % res_nc{2} = [history_path,'\','mcv_output_4p5.nc'];
@@ -19,10 +19,11 @@ res_nc{2} = [history_path,'\','mcv_output.nc'];
 % res_nc{4} = [history_path,'\','mcv_output_1p125.nc'];
 % res_nc{5} = [history_path,'\','mcv_output_0p5625.nc'];
 
-% res_nc{1} = [history_path,'\','mcv_output_6p0.nc'];
-% res_nc{2} = [history_path,'\','mcv_output_3p0.nc'];
+res_nc{1} = [history_path,'\','mcv_output_6p0.nc'];
+res_nc{2} = [history_path,'\','mcv_output_3p0.nc'];
 % res_nc{3} = [history_path,'\','mcv_output_1p5.nc'];
 % res_nc{4} = [history_path,'\','mcv_output_0p75.nc'];
+% res_nc{3} = [history_path,'\','mcv_output.nc'];
 
 res_num = size(res_nc,2);
 
