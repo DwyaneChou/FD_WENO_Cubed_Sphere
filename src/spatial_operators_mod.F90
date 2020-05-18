@@ -163,8 +163,8 @@ MODULE spatial_operators_mod
         !$OMP END PARALLEL DO
       enddo
       
-      call unify_bdy(flux_x_ext,flux_y_ext,E_ext,phiG_ext,u_ext,v_ext)
-      !call unify_bdy_field_contravariant(flux_x_ext,flux_y_ext)
+      !call unify_bdy(flux_x_ext,flux_y_ext,E_ext,phiG_ext,u_ext,v_ext)
+      call unify_bdy_field_contravariant(flux_x_ext,flux_y_ext)
       !call unify_bdy_field_covariant(u_ext,v_ext)
       !call unify_bdy_field_scalar(E_ext)
         
