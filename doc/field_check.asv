@@ -3,10 +3,10 @@
 % clear
 
 % var_name = 'v';
-% var_name = 'phit';
+var_name = 'phit';
 % var_name = 'zonal_wind';
-var_name = 'meridional_wind';
-it       = 10;
+% var_name = 'meridional_wind';
+it       = 2;
 
 nc_file = '..\run\mcv_output.nc';
 

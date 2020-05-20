@@ -32,8 +32,8 @@ MODULE spatial_operators_mod
       real, dimension(ics:ice,jcs:jce,ifs:ife) :: dudy
       
       integer i,j,iPatch
-      integer ip1,jp1,ip2,jp2,ip3,jp3
-      integer im1,jm1,im2,jm2,im3,jm3
+      integer ip1,jp1,ip2,jp2
+      integer im1,jm1,im2,jm2
       
       phit  = stat%phi + mesh%phis
       
@@ -54,17 +54,13 @@ MODULE spatial_operators_mod
             im2 = i - 2
             jp2 = j + 2
             jm2 = j - 2
-            ip3 = i + 3
-            im3 = i - 3
-            jp3 = j + 3
-            jm3 = j - 3
             
-            dfluxdx  (i,j,iPatch) = (-flux_x(im3,j,iPatch) + 9. * flux_x(im2,j,iPatch) - 45. * flux_x(im1,j,iPatch) + 45. * flux_x(ip1,j,iPatch) - 9. * flux_x(ip2,j,iPatch) + flux_x(ip3,j,iPatch) ) / ( 60. * dx )
-            dEdx     (i,j,iPatch) = (-E     (im3,j,iPatch) + 9. * E     (im2,j,iPatch) - 45. * E     (im1,j,iPatch) + 45. * E     (ip1,j,iPatch) - 9. * E     (ip2,j,iPatch) + E     (ip3,j,iPatch) ) / ( 60. * dx )
-            dvdx     (i,j,iPatch) = (-stat%v(im3,j,iPatch) + 9. * stat%v(im2,j,iPatch) - 45. * stat%v(im1,j,iPatch) + 45. * stat%v(ip1,j,iPatch) - 9. * stat%v(ip2,j,iPatch) + stat%v(ip3,j,iPatch) ) / ( 60. * dx )
-            dfluxdy  (i,j,iPatch) = (-flux_y(i,jm3,iPatch) + 9. * flux_y(i,jm2,iPatch) - 45. * flux_y(i,jm1,iPatch) + 45. * flux_y(i,jp1,iPatch) - 9. * flux_y(i,jp2,iPatch) + flux_y(i,jp3,iPatch) ) / ( 60. * dy )
-            dEdy     (i,j,iPatch) = (-E     (i,jm3,iPatch) + 9. * E     (i,jm2,iPatch) - 45. * E     (i,jm1,iPatch) + 45. * E     (i,jp1,iPatch) - 9. * E     (i,jp2,iPatch) + E     (i,jp3,iPatch) ) / ( 60. * dy )
-            dudy     (i,j,iPatch) = (-stat%u(i,jm3,iPatch) + 9. * stat%u(i,jm2,iPatch) - 45. * stat%u(i,jm1,iPatch) + 45. * stat%u(i,jp1,iPatch) - 9. * stat%u(i,jp2,iPatch) + stat%u(i,jp3,iPatch) ) / ( 60. * dy )
+            dfluxdx  (i,j,iPatch) = ( flux_x(im2,j,iPatch) - 8. * flux_x(im1,j,iPatch) + 8. * flux_x(ip1,j,iPatch) - flux_x(ip2,j,iPatch) ) / ( 12. * dx )
+            dEdx     (i,j,iPatch) = ( E     (im2,j,iPatch) - 8. * E     (im1,j,iPatch) + 8. * E     (ip1,j,iPatch) - E     (ip2,j,iPatch) ) / ( 12. * dx )
+            dvdx     (i,j,iPatch) = ( stat%v(im2,j,iPatch) - 8. * stat%v(im1,j,iPatch) + 8. * stat%v(ip1,j,iPatch) - stat%v(ip2,j,iPatch) ) / ( 12. * dx )
+            dfluxdy  (i,j,iPatch) = ( flux_y(i,jm2,iPatch) - 8. * flux_y(i,jm1,iPatch) + 8. * flux_y(i,jp1,iPatch) - flux_y(i,jp2,iPatch) ) / ( 12. * dy )
+            dEdy     (i,j,iPatch) = ( E     (i,jm2,iPatch) - 8. * E     (i,jm1,iPatch) + 8. * E     (i,jp1,iPatch) - E     (i,jp2,iPatch) ) / ( 12. * dy )
+            dudy     (i,j,iPatch) = ( stat%u(i,jm2,iPatch) - 8. * stat%u(i,jm1,iPatch) + 8. * stat%u(i,jp1,iPatch) - stat%u(i,jp2,iPatch) ) / ( 12. * dy )
             
             vorticity(i,j,iPatch) = dvdx(i,j,iPatch) - dudy(i,j,iPatch) + mesh%sqrtG(i,j,iPatch) * mesh%f(i,j,iPatch)
           enddo

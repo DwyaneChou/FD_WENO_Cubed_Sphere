@@ -1,5 +1,5 @@
 &time_settings
-run_days         = 100
+run_days         = 5
 run_hours        = 0
 run_minutes      = 0
 run_seconds      = 0
@@ -9,14 +9,13 @@ integral_scheme  = 'RK4' ! Choose from 'RK3_TVD' or 'RK4'
 /
 
 &case_select
-case_num    = 6, ! Choose from 2, 5 or 6
+case_num    = 2, ! Choose from 2, 5 or 6
 /
 
 &domain
-dx          = 0.5,  ! Unit: degree 
-dy          = 0.5,  ! Unit: degree
-xhalo       = 3,  ! The ghost cell size
-yhalo       = 3,  ! The ghost cell size
+mesh_file   = 'ccs_output_0p5.nc'
+xhalo       = 4,  ! The ghost cell size
+yhalo       = 4,  ! The ghost cell size
 /
 
 &dynamic_opt

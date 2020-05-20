@@ -12,7 +12,7 @@
       use ghost_mod
       use test_case_mod
       use time_scheme_mod
-      use output_mod
+      use io_mod
       use spatial_operators_mod
       use diag_mod
       implicit none
@@ -34,10 +34,9 @@
       
       print*,'Start the MCV Shallow Water model'
       call initParameters
-      call initMesh
+      call read_mesh
       call initStat
       call initTend
-      call initGhost
       call initTestCase
       
       print*,'The MCV order is ', DOF

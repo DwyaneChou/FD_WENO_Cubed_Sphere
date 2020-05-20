@@ -5,7 +5,7 @@
     use parameters_mod
     use spatial_operators_mod
     use ghost_mod
-    use output_mod
+    use io_mod
     implicit none
     
     contains
@@ -24,8 +24,7 @@
       
       call spatial_operator (stat_old , tend(one))
       call update_stat      (stat(two), stat_old, tend(one), 0.5 * dt)
-      !call update_stat      (stat(two), stat(one), tend(one), 0.5 * dt)
-      !call history_write_stat(stat(two),2)
+      !call history_write_tend(tend(one),2)
       !stop
       
       call spatial_operator (stat(two), tend(two))
@@ -77,11 +76,9 @@
       stat_new%u    = stat_old%u    + inc_t * tend%u   
       stat_new%v    = stat_old%v    + inc_t * tend%v   
       
-      stat_new%phi = stat_new%phiG / mesh%sqrtG
-      
       call correct_bdy_ghost(stat_new)
       
-      stat_new%phiG = stat_new%phi * mesh%sqrtG
+      stat_new%phi = stat_new%phiG / mesh%sqrtG
       
     end subroutine update_stat
     
@@ -95,11 +92,9 @@
       stat_new%u    = 0.75 * stat_old%u    + 0.25 * stat1%u    + 0.25 * dt * tend%u   
       stat_new%v    = 0.75 * stat_old%v    + 0.25 * stat1%v    + 0.25 * dt * tend%v   
       
-      stat_new%phi = stat_new%phiG / mesh%sqrtG
-      
       call correct_bdy_ghost(stat_new)
       
-      stat_new%phiG = stat_new%phi * mesh%sqrtG
+      stat_new%phi = stat_new%phiG / mesh%sqrtG
       
     end subroutine update_stat_RK3_TVD_1
     
@@ -111,13 +106,11 @@
       
       stat_new%phiG = stat_old%phiG / 3. + 2./3. * stat2%phiG + 2./3. * dt * tend%phiG
       stat_new%u    = stat_old%u    / 3. + 2./3. * stat2%u    + 2./3. * dt * tend%u   
-      stat_new%v    = stat_old%v    / 3. + 2./3. * stat2%v    + 2./3. * dt * tend%v   
-      
-      stat_new%phi = stat_new%phiG / mesh%sqrtG
+      stat_new%v    = stat_old%v    / 3. + 2./3. * stat2%v    + 2./3. * dt * tend%v  
       
       call correct_bdy_ghost(stat_new)
       
-      stat_new%phiG = stat_new%phi * mesh%sqrtG
+      stat_new%phi = stat_new%phiG / mesh%sqrtG
       
     end subroutine update_stat_RK3_TVD_2
     
@@ -128,12 +121,6 @@
       call fill_ghost              (stat)
       call convert_wind_SP2P       (stat)
       call convert_wind_cov2contrav(stat)
-      
-      ! Fill ghost band and unify values of common points on boundary
-      !call convert_ghost_wind_P2SP (stat)
-      !call fill_ghost              (stat)
-      !call convert_ghost_wind_SP2P (stat)
-      !call convert_wind_cov2contrav(stat)
       
     end subroutine correct_bdy_ghost
     

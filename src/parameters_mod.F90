@@ -19,8 +19,9 @@ module parameters_mod
   integer :: case_num
   
   ! Domain
-  real    :: dx     !  grid-spacing in the x-direction
-  real    :: dy     !  grid-spacing in the y-direction
+  character*200 :: mesh_file
+  real          :: dx        !  grid-spacing in the x-direction
+  real          :: dy        !  grid-spacing in the y-direction
   
   integer :: xhalo  !  halo number of x-diretion
   integer :: yhalo  !  halo number of y-diretion
@@ -93,8 +94,7 @@ module parameters_mod
   
   namelist /case_select/   case_num
   
-  namelist /domain/        dx          ,&
-                           dy          ,&
+  namelist /domain/        mesh_file   ,&
                            xhalo       ,&
                            yhalo
   namelist /dynamic_opt/   reconstruct_scheme
@@ -136,69 +136,6 @@ module parameters_mod
     
     ! Calculate total run steps
     total_run_steps = ceiling(total_run_time/dt)
-    
-    ! Check if dx and dy are avaliable to achieve the integral element number
-    if( (x_max - x_min)/dx - int((x_max - x_min)/dx) /= 0. )then
-      stop '90 divide dx must be integer, choose another dx'
-    end if
-    
-    if( (y_max - y_min)/dy - int((y_max - y_min)/dy) /= 0. )then
-        stop '90 divide dy must be integer, choose another dy'
-    end if
-    
-    ! Calculate element numbers on x/y direction
-    Nx = int((x_max - x_min)/dx)
-    Ny = int((y_max - y_min)/dy)
-    
-    ! Calculate PV number on x/y direction
-    nPVx = Nx * (DOF - 1) + 1
-    nPVy = Ny * (DOF - 1) + 1
-    
-    ! Calculate grid number on longitude/latitude coordinate
-    Nlambda = nPVx
-    Ntheta  = nPVy
-    
-    ! Calculate starting and ending index for physical domain
-    ids  = 1
-    ide  = nPVx
-    jds  = 1
-    jde  = nPVy
-    
-    ics  = 1  - xhalo
-    ice  = Nx + xhalo
-    jcs  = 1  - yhalo
-    jce  = Ny + yhalo
-    
-    its = 1
-    ite = Nx
-    jts = 1
-    jte = Ny
-    
-    Nx_halo = ice - ics + 1
-    Ny_halo = jce - jcs + 1
-    
-    ! Calculate starting and ending index for memory array
-    ips  = 1    - xhalo * (DOF - 1)
-    ipe  = nPVx + xhalo * (DOF - 1)
-    jps  = 1    - yhalo * (DOF - 1)
-    jpe  = nPVy + yhalo * (DOF - 1)
-    
-    nPVx_halo = ipe - ips + 1
-    nPVy_halo = jpe - jps + 1
-    
-    nPVHalo = xhalo * (DOF - 1)
-    
-    ! Setting the starting patch index and ending patch index
-    ifs = 1
-    ife = Nf
-    
-    ! Convert Degree to Radian
-    dx    = dx    * D2R
-    dy    = dy    * D2R
-    x_min = x_min * D2R
-    x_max = x_max * D2R
-    y_min = y_min * D2R
-    y_max = y_max * D2R
     
     ! Setting the number of substeps in temporal integration scheme
     if(trim(adjustl(integral_scheme)) == 'RK3_TVD')then

@@ -52,6 +52,7 @@ set(source_files
   src/constants_mod.F90
   src/parameters_mod.F90
   src/mesh_mod.F90
+  src/math_mod.f90
   src/stat_mod.F90
   src/tend_mod.F90
   src/projection_mod.F90
@@ -60,7 +61,7 @@ set(source_files
   src/spatial_operators_mod.F90
   src/time_scheme_mod.F90
   src/diag_mod.F90
-  src/output_mod.F90
+  src/io_mod.F90
 )
 
 add_library(MCV_SW ${source_files})
