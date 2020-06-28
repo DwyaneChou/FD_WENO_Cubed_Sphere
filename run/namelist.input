@@ -1,9 +1,9 @@
 &time_settings
-run_days         = 100
+run_days         = 33
 run_hours        = 0
 run_minutes      = 0
 run_seconds      = 0
-dt               = 100
+dt               = 120
 history_interval = 3600
 integral_scheme  = 'RK4' ! Choose from 'RK3_TVD' or 'RK4'
 /
@@ -13,10 +13,10 @@ case_num    = 6, ! Choose from 2, 5 or 6
 /
 
 &domain
-dx          = 0.5,  ! Unit: degree 
-dy          = 0.5,  ! Unit: degree
-xhalo       = 3,  ! The ghost cell size
-yhalo       = 3,  ! The ghost cell size
+dx          = 1,  ! Unit: degree 
+dy          = 1,  ! Unit: degree
+xhalo       = 4,  ! The ghost cell size
+yhalo       = 4,  ! The ghost cell size
 /
 
 &dynamic_opt

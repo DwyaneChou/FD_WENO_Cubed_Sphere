@@ -84,32 +84,24 @@ MODULE spatial_operators_mod
       
       call weno(flux_x_ext_p, flux_x   , 1, 1)
       call weno(flux_x_ext_n, flux_x   ,-1, 1)
-      !call weno(flux_y_ext_p, flux_y   , 1, 1) ! Just for unifying bdy
-      !call weno(flux_y_ext_n, flux_y   ,-1, 1) ! Just for unifying bdy
       call weno(E_ext_p     , E        , 1, 1)
       call weno(E_ext_n     , E        ,-1, 1)
-      call weno(phiG_ext_p  , stat%phiG, 1, 1)
-      call weno(phiG_ext_n  , stat%phiG,-1, 1)
+      !call weno(phiG_ext_p  , stat%phiG, 1, 1)
+      !call weno(phiG_ext_n  , stat%phiG,-1, 1)
       call weno(phitG_ext_p , phitG    , 1, 1)
       call weno(phitG_ext_n , phitG    ,-1, 1)
-      call weno(u_ext_p     , stat%u   , 1, 1)
-      call weno(u_ext_n     , stat%u   ,-1, 1)
       call weno(v_ext_p     , stat%v   , 1, 1)
       call weno(v_ext_n     , stat%v   ,-1, 1)
-      !call weno(flux_x_ext_p, flux_x   , 1, 2) ! Just for unifying bdy
-      !call weno(flux_x_ext_n, flux_x   ,-1, 2) ! Just for unifying bdy
       call weno(flux_y_ext_p, flux_y   , 1, 2)
       call weno(flux_y_ext_n, flux_y   ,-1, 2)
       call weno(E_ext_p     , E        , 1, 2)
       call weno(E_ext_n     , E        ,-1, 2)
-      call weno(phiG_ext_p  , stat%phiG, 1, 2)
-      call weno(phiG_ext_n  , stat%phiG,-1, 2)
+      !call weno(phiG_ext_p  , stat%phiG, 1, 2)
+      !call weno(phiG_ext_n  , stat%phiG,-1, 2)
       call weno(phitG_ext_p , phitG    , 1, 2)
       call weno(phitG_ext_n , phitG    ,-1, 2)
       call weno(u_ext_p     , stat%u   , 1, 2)
       call weno(u_ext_n     , stat%u   ,-1, 2)
-      call weno(v_ext_p     , stat%v   , 1, 2)
-      call weno(v_ext_n     , stat%v   ,-1, 2)
       
       do iPatch = ifs, ife
         !$OMP PARALLEL DO PRIVATE(i,uBdy,phitBdy,eigenvalue_x,maxeigen_x,ip1,im1,jc)
@@ -127,10 +119,7 @@ MODULE spatial_operators_mod
             maxeigen_x = maxval(abs(eigenvalue_x))
             
             flux_x_ext(ip1,jc,iPatch) = 0.5 * ( flux_x_ext_p(ip1,jc,iPatch) + flux_x_ext_n(ip1,jc,iPatch) - maxeigen_x    * ( phitG_ext_n (ip1,jc,iPatch) - phitG_ext_p (ip1,jc,iPatch) ) )
-            !flux_y_ext(ip1,jc,iPatch) = 0.5 * ( flux_y_ext_p(ip1,jc,iPatch) + flux_y_ext_n(ip1,jc,iPatch) - sign(1.,uBdy) * ( flux_y_ext_n(ip1,jc,iPatch) - flux_y_ext_p(ip1,jc,iPatch) ) ) ! Just for unifying bdy
             E_ext     (ip1,jc,iPatch) = 0.5 * ( E_ext_p     (ip1,jc,iPatch) + E_ext_n     (ip1,jc,iPatch) - maxeigen_x    * ( u_ext_n     (ip1,jc,iPatch) - u_ext_p     (ip1,jc,iPatch) ) )
-            phiG_ext  (ip1,jc,iPatch) = 0.5 * ( phiG_ext_p  (ip1,jc,iPatch) + phiG_ext_n  (ip1,jc,iPatch) - sign(1.,uBdy) * ( phiG_ext_n  (ip1,jc,iPatch) - phiG_ext_p  (ip1,jc,iPatch) ) )
-            u_ext     (ip1,jc,iPatch) = 0.5 * ( u_ext_p     (ip1,jc,iPatch) + u_ext_n     (ip1,jc,iPatch) - sign(1.,uBdy) * ( u_ext_n     (ip1,jc,iPatch) - u_ext_p     (ip1,jc,iPatch) ) ) ! Just for unifying bdy
             v_ext     (ip1,jc,iPatch) = 0.5 * ( v_ext_p     (ip1,jc,iPatch) + v_ext_n     (ip1,jc,iPatch) - sign(1.,uBdy) * ( v_ext_n     (ip1,jc,iPatch) - v_ext_p     (ip1,jc,iPatch) ) )
           enddo
         enddo
@@ -152,21 +141,13 @@ MODULE spatial_operators_mod
             
             maxeigen_y = maxval(abs(eigenvalue_y))
             
-            !flux_x_ext(ic,jp1,iPatch) = 0.5 * ( flux_x_ext_p(ic,jp1,iPatch) + flux_x_ext_n(ic,jp1,iPatch) - sign(1.,vBdy) * ( flux_x_ext_n(ic,jp1,iPatch) - flux_x_ext_p(ic,jp1,iPatch) ) ) ! Just for unifying bdy
             flux_y_ext(ic,jp1,iPatch) = 0.5 * ( flux_y_ext_p(ic,jp1,iPatch) + flux_y_ext_n(ic,jp1,iPatch) - maxeigen_y    * ( phitG_ext_n (ic,jp1,iPatch) - phitG_ext_p (ic,jp1,iPatch) ) )
             E_ext     (ic,jp1,iPatch) = 0.5 * ( E_ext_p     (ic,jp1,iPatch) + E_ext_n     (ic,jp1,iPatch) - maxeigen_y    * ( v_ext_n     (ic,jp1,iPatch) - v_ext_p     (ic,jp1,iPatch) ) )
-            phiG_ext  (ic,jp1,iPatch) = 0.5 * ( phiG_ext_p  (ic,jp1,iPatch) + phiG_ext_n  (ic,jp1,iPatch) - sign(1.,vBdy) * ( phiG_ext_n  (ic,jp1,iPatch) - phiG_ext_p  (ic,jp1,iPatch) ) )
             u_ext     (ic,jp1,iPatch) = 0.5 * ( u_ext_p     (ic,jp1,iPatch) + u_ext_n     (ic,jp1,iPatch) - sign(1.,vBdy) * ( u_ext_n     (ic,jp1,iPatch) - u_ext_p     (ic,jp1,iPatch) ) )
-            v_ext     (ic,jp1,iPatch) = 0.5 * ( v_ext_p     (ic,jp1,iPatch) + v_ext_n     (ic,jp1,iPatch) - sign(1.,vBdy) * ( v_ext_n     (ic,jp1,iPatch) - v_ext_p     (ic,jp1,iPatch) ) ) ! Just for unifying bdy
           enddo
         enddo
         !$OMP END PARALLEL DO
       enddo
-      
-      !call unify_bdy(flux_x_ext,flux_y_ext,E_ext,phiG_ext,u_ext,v_ext)
-      call unify_bdy_field_contravariant(flux_x_ext,flux_y_ext)
-      !call unify_bdy_field_covariant(u_ext,v_ext)
-      !call unify_bdy_field_scalar(E_ext)
         
       do iPatch = ifs, ife
         !$OMP PARALLEL DO PRIVATE(i,ic,jc,ip1,im1,jp1,jm1)
