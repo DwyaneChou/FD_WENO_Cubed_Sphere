@@ -1,19 +1,19 @@
 &time_settings
-run_days         = 5
+run_days         = 50
 run_hours        = 0
 run_minutes      = 0
 run_seconds      = 0
-dt               = 100
+dt               = 200
 history_interval = 3600
 integral_scheme  = 'RK4' ! Choose from 'RK3_TVD' or 'RK4'
 /
 
 &case_select
-case_num    = 2, ! Choose from 2, 5 or 6
+case_num    = 5, ! Choose from 2, 5 or 6
 /
 
 &domain
-mesh_file   = 'ccs_output_0p5.nc'
+mesh_file   = 'ccs_output_1p0_2nd.nc'
 xhalo       = 4,  ! The ghost cell size
 yhalo       = 4,  ! The ghost cell size
 /

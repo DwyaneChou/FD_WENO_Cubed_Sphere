@@ -10,8 +10,8 @@ history_path = 'E:\Study\Models\FD_WENO_Cubed_Sphere\run';
 
 % res_nc{1} = [history_path,'\','mcv_output_2p0.nc'];
 res_nc{1} = [history_path,'\','mcv_output_1p0.nc'];
-% res_nc{3} = [history_path,'\','mcv_output_0p5.nc'];
-res_nc{2} = [history_path,'\','mcv_output.nc'];
+res_nc{2} = [history_path,'\','mcv_output_0p5.nc'];
+% res_nc{2} = [history_path,'\','mcv_output.nc'];
 
 % res_nc{1} = [history_path,'\','mcv_output_9p0.nc'];
 % res_nc{2} = [history_path,'\','mcv_output_4p5.nc'];

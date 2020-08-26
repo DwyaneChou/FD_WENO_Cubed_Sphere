@@ -32,6 +32,8 @@ lat      = ncread(nc_file,'lat');
 areaCell = ncread(nc_file,'areaCell');
 var      = ncread(nc_file,var_name,[1,1,1,it],[Inf,Inf,6,1]);
 
+var = areaCell;
+
 figure
 var_plot = squeeze(var(:,:,iPatch))';
 pic=pcolor(var_plot);
