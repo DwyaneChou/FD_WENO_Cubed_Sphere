@@ -103,6 +103,7 @@ MODULE spatial_operators_mod
       call weno(u_ext_p     , stat%u   , 1, 2)
       call weno(u_ext_n     , stat%u   ,-1, 2)
       
+      ! x dir
       do iPatch = ifs, ife
         !$OMP PARALLEL DO PRIVATE(i,uBdy,phitBdy,eigenvalue_x,maxeigen_x,ip1,im1,jc)
         do j = jts, jte
@@ -126,6 +127,7 @@ MODULE spatial_operators_mod
         !$OMP END PARALLEL DO
       enddo
       
+      ! y dir
       do iPatch = ifs, ife
         !$OMP PARALLEL DO PRIVATE(i,vBdy,phitBdy,eigenvalue_y,maxeigen_y,jp1,jm1,ic)
         do j = jts-1, jte
@@ -148,7 +150,8 @@ MODULE spatial_operators_mod
         enddo
         !$OMP END PARALLEL DO
       enddo
-        
+      
+      ! calculate tend
       do iPatch = ifs, ife
         !$OMP PARALLEL DO PRIVATE(i,ic,jc,ip1,im1,jp1,jm1)
         do j = jts, jte
